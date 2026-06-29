@@ -20,6 +20,7 @@ export default function AbsentList({ absentList }) {
               <th className="px-4 py-2">เลขประจำตัว</th>
               <th className="px-4 py-2">เลขที่</th>
               <th className="px-4 py-2 text-left">ชั้น/ห้อง</th>
+              <th className="px-4 py-2">ตอน</th>
               <th className="px-4 py-2 text-left">ชื่อ-สกุลนักเรียน</th>
               <th className="px-4 py-2 text-left">ผู้ปกครอง</th>
               <th className="px-4 py-2">ความสัมพันธ์</th>
@@ -31,6 +32,7 @@ export default function AbsentList({ absentList }) {
                 <td className="px-4 py-2 text-center text-gray-500">{c.studentId}</td>
                 <td className="px-4 py-2 text-center text-gray-500">{c.studentNumber}</td>
                 <td className="px-4 py-2 text-gray-600">{c.classKey}</td>
+                <td className="px-4 py-2 text-center text-gray-500">{c.session}</td>
                 <td className="px-4 py-2 text-gray-800">{c.firstName} {c.lastName}</td>
                 <td className="px-4 py-2 text-gray-700">{c.guardianFirstName} {c.guardianLastName}</td>
                 <td className="px-4 py-2 text-center text-gray-500">{c.relationship}</td>

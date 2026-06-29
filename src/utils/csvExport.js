@@ -1,5 +1,5 @@
 export function exportCSV(checkins, meetingTitle) {
-  const header = 'เลขประจำตัว,เลขที่,ชั้น,ห้อง,ชื่อนักเรียน,นามสกุลนักเรียน,ชื่อผู้ปกครอง,นามสกุลผู้ปกครอง,ความสัมพันธ์,ผู้ปกครองมา\n'
+  const header = 'เลขประจำตัว,เลขที่,ชั้น,ห้อง,ตอน,ชื่อนักเรียน,นามสกุลนักเรียน,ชื่อผู้ปกครอง,นามสกุลผู้ปกครอง,ความสัมพันธ์,ผู้ปกครองมา\n'
   const rows = checkins
     .map(c =>
       [
@@ -7,6 +7,7 @@ export function exportCSV(checkins, meetingTitle) {
         c.studentNumber,
         c.classNumber,
         c.classSection,
+        c.session,
         c.firstName,
         c.lastName,
         c.guardianFirstName,

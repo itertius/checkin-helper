@@ -34,7 +34,7 @@ export function useCheckins(meetingId) {
   async function addCheckin(data) {
     await addDoc(collection(db, 'meetings', meetingId, 'checkins'), {
       ...data,
-      classKey: buildClassKey(data.classNumber, data.classSection),
+      classKey: buildClassKey(data.classNumber, data.classSection, data.session),
       guardianAttended: data.guardianAttended ?? true,
       recordedAt: serverTimestamp(),
       recordedBy: user.uid,

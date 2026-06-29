@@ -24,6 +24,7 @@ export default function CheckInList({ checkins, loading, onToggle, onRemove }) {
               <th className="px-3 py-2">เลขประจำตัว</th>
               <th className="px-3 py-2">เลขที่</th>
               <th className="px-3 py-2">ชั้น/ห้อง</th>
+              <th className="px-3 py-2">ตอน</th>
               <th className="px-3 py-2 text-left">ชื่อ-สกุลนักเรียน</th>
               <th className="px-3 py-2 text-left">ผู้ปกครอง</th>
               <th className="px-3 py-2">สถานะ</th>

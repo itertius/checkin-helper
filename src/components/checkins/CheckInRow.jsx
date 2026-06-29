@@ -4,6 +4,7 @@ export default function CheckInRow({ checkin, onToggle, onRemove }) {
       <td className="px-3 py-2 text-sm text-center text-gray-500">{checkin.studentId}</td>
       <td className="px-3 py-2 text-sm text-center text-gray-500">{checkin.studentNumber}</td>
       <td className="px-3 py-2 text-sm text-center text-gray-500">{checkin.classKey}</td>
+      <td className="px-3 py-2 text-sm text-center text-gray-500">{checkin.session}</td>
       <td className="px-3 py-2 text-sm text-gray-800 whitespace-nowrap">{checkin.firstName} {checkin.lastName}</td>
       <td className="px-3 py-2 text-sm text-gray-700 whitespace-nowrap">
         {checkin.guardianFirstName} {checkin.guardianLastName}
