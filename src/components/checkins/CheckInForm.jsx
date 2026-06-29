@@ -3,7 +3,7 @@ import { useState } from 'react'
 import AttendanceToggle from './AttendanceToggle.jsx'
 
 const RELATIONSHIPS = ['บิดา', 'มารดา', 'ปู่', 'ย่า', 'ตา', 'ยาย', 'พี่', 'น้อง', 'ผู้ปกครอง', 'อื่นๆ']
-const SESSIONS = ['ก', 'ข']
+const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
 
 export default function CheckInForm({ onSubmit }) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -12,7 +12,7 @@ export default function CheckInForm({ onSubmit }) {
       studentNumber: '',
       classNumber: '',
       classSection: '',
-      session: 'ก',
+      session: 'ไม่มีตอน',
       firstName: '',
       lastName: '',
       guardianFirstName: '',

@@ -1,5 +1,6 @@
 export function buildClassKey(classNumber, classSection, session) {
-  return session ? `${classNumber}/${classSection} (${session})` : `${classNumber}/${classSection}`
+  const hasSession = session && session !== 'ไม่มีตอน'
+  return hasSession ? `${classNumber}/${classSection} (${session})` : `${classNumber}/${classSection}`
 }
 
 export function sortClassKeys(keys) {
