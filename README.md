@@ -1,47 +1,63 @@
-# 📋 ระบบเช็คชื่อผู้ปกครอง
+# ระบบเช็คชื่อผู้ปกครอง 📋
+
+> ระบบช่วยครูบันทึกการเข้าร่วมประชุมของผู้ปกครอง พร้อม Dashboard สรุปผลแบบ Real-time
 
 [![Deploy to GitHub Pages](https://github.com/itertius/checkin-helper/actions/workflows/deploy.yml/badge.svg)](https://github.com/itertius/checkin-helper/actions/workflows/deploy.yml)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![React](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-10-FFCA28.svg)](https://firebase.google.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4.svg)](https://tailwindcss.com/)
 
-ระบบช่วยครูบันทึกการเข้าร่วมประชุมของผู้ปกครอง สร้างด้วย React + Firebase พร้อม deploy บน GitHub Pages
+## 🌟 Features
 
-🌐 **[เปิดใช้งาน](https://itertius.github.io/checkin-helper/)**
+- **เช็คชื่อแบบ Real-time**
+  - บันทึกข้อมูลนักเรียน: เลขที่, ชั้น, ห้อง, ชื่อ, นามสกุล
+  - สลับสถานะ "มา / ไม่มา" ได้ทันที
+  - ข้อมูลอัปเดตแบบ Real-time ทุกหน้าจอ
 
----
+- **Dashboard สรุปผล**
+  - กราฟแท่งแสดงการเข้าร่วมรายห้อง
+  - ตารางสรุปจำนวนและเปอร์เซ็นต์รายห้อง
+  - รายชื่อผู้ปกครองที่ยังไม่มา
+  - Export ข้อมูลเป็น CSV
 
-## ✨ Features
+- **จัดการหลายประชุม**
+  - สร้างประชุมได้หลายครั้ง เช่น ภาค 1/2567, ภาค 2/2567
+  - เข้าสู่ระบบด้วย Google Account
 
-- 🔐 **เข้าสู่ระบบด้วย Google** — ไม่ต้องสมัครสมาชิก
-- 📅 **หลายประชุม** — สร้างและจัดการได้หลายครั้ง เช่น ภาค 1/2567, ภาค 2/2567
-- ✅ **เช็คชื่อแบบ Real-time** — บันทึกข้อมูลนักเรียนและสถานะผู้ปกครองทันที
-- 📊 **Dashboard สรุปผล** — กราฟและตารางสรุปรายห้อง
-- 📋 **รายชื่อผู้ปกครองที่ยังไม่มา** — กรองอัตโนมัติ
-- 📥 **Export CSV** — ดาวน์โหลดข้อมูลไปใช้ต่อได้เลย
+## 🚀 Quick Start
 
----
-
-## 🛠 Tech Stack
-
-| | |
-|---|---|
-| Frontend | React + Vite |
-| Styling | TailwindCSS v4 |
-| Auth & DB | Firebase (Authentication + Firestore) |
-| Charts | Recharts |
-| Deploy | GitHub Actions → GitHub Pages |
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone & Install
-
+1. **Clone the repository**
 ```bash
 git clone https://github.com/itertius/checkin-helper.git
 cd checkin-helper
+```
+
+2. **Install dependencies**
+```bash
 npm install
 ```
 
-### 2. Firebase Setup
+3. **Set up environment variables**
+```bash
+cp .env.local.example .env.local
+# ใส่ค่า Firebase config ใน .env.local
+```
+
+4. **Run the application**
+```bash
+npm run dev
+```
+
+## 🛠 Tech Stack
+
+- **Frontend**: React 19 + Vite
+- **Styling**: TailwindCSS v4
+- **Auth & Database**: Firebase (Authentication + Firestore)
+- **Charts**: Recharts
+- **Deploy**: GitHub Actions → GitHub Pages
+
+## 🔧 Firebase Setup
 
 1. สร้างโปรเจกต์ที่ [Firebase Console](https://console.firebase.google.com)
 2. เปิด **Authentication** → Sign-in method → **Google**
@@ -49,13 +65,7 @@ npm install
 4. สร้าง **Firestore Database** (test mode)
 5. Project Settings → เพิ่ม Web App → copy `firebaseConfig`
 
-### 3. Environment Variables
-
-```bash
-cp .env.local.example .env.local
-```
-
-แล้วใส่ค่า Firebase ใน `.env.local`:
+ใส่ค่าใน `.env.local`:
 
 ```env
 VITE_FIREBASE_API_KEY=...
@@ -66,19 +76,24 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 ```
 
-### 4. Run
+## 📁 Project Structure
 
-```bash
-npm run dev
+```
+src/
+├── contexts/           # Firebase Auth context
+├── hooks/              # useMeetings, useCheckins, useDashboard
+├── pages/              # Login, Meetings, MeetingDetail, Dashboard
+├── components/
+│   ├── layout/         # Navbar, ProtectedRoute
+│   ├── meetings/       # MeetingCard, CreateMeetingModal
+│   ├── checkins/       # CheckInForm, CheckInList, AttendanceToggle
+│   └── dashboard/      # Charts, Tables, CSV Export
+└── utils/              # csvExport, classUtils
 ```
 
----
+## 📦 Deployment
 
-## 🔄 Deploy to GitHub Pages
-
-### GitHub Secrets
-
-ไปที่ `Settings → Secrets and variables → Actions` แล้วเพิ่ม 6 secrets:
+เพิ่ม GitHub Secrets ทั้ง 6 ตัวที่ `Settings → Secrets and variables → Actions`:
 
 | Secret | ค่า |
 |---|---|
@@ -89,31 +104,21 @@ npm run dev
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | messagingSenderId |
 | `VITE_FIREBASE_APP_ID` | appId |
 
-### Enable Pages
+จากนั้น `Settings → Pages → Source → GitHub Actions` → push to `main` → deploy อัตโนมัติ
 
-`Settings → Pages → Source → GitHub Actions`
+## 🤝 Contributing
 
-Push to `main` → deploy อัตโนมัติ
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
----
+## 🖊️ Authors
 
-## 📁 Project Structure
-
-```
-src/
-├── contexts/        # Firebase Auth context
-├── hooks/           # useMeetings, useCheckins, useDashboard
-├── pages/           # Login, Meetings, MeetingDetail, Dashboard
-├── components/
-│   ├── layout/      # Navbar, ProtectedRoute
-│   ├── meetings/    # MeetingCard, CreateMeetingModal
-│   ├── checkins/    # CheckInForm, CheckInList, AttendanceToggle
-│   └── dashboard/   # Charts, Tables, CSV Export
-└── utils/           # csvExport, classUtils
-```
-
----
+**Developer**
+- **Witsanupong Kolakul** - [itertius](https://github.com/itertius) @ [iterrius_te](https://www.instagram.com/iterrius_te/)
 
 ## 📄 License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
