@@ -21,10 +21,12 @@ export default function CheckInList({ checkins, loading, onToggle, onRemove }) {
         <table className="w-full">
           <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
             <tr>
+              <th className="px-3 py-2">เลขประจำตัว</th>
               <th className="px-3 py-2">เลขที่</th>
               <th className="px-3 py-2">ชั้น/ห้อง</th>
-              <th className="px-3 py-2 text-left">ชื่อ-สกุล</th>
-              <th className="px-3 py-2">ผู้ปกครอง</th>
+              <th className="px-3 py-2 text-left">ชื่อ-สกุลนักเรียน</th>
+              <th className="px-3 py-2 text-left">ผู้ปกครอง</th>
+              <th className="px-3 py-2">สถานะ</th>
               <th className="px-3 py-2"></th>
             </tr>
           </thead>

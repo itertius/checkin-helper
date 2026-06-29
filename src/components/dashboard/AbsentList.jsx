@@ -17,17 +17,23 @@ export default function AbsentList({ absentList }) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
             <tr>
+              <th className="px-4 py-2">เลขประจำตัว</th>
               <th className="px-4 py-2">เลขที่</th>
               <th className="px-4 py-2 text-left">ชั้น/ห้อง</th>
-              <th className="px-4 py-2 text-left">ชื่อ-สกุล</th>
+              <th className="px-4 py-2 text-left">ชื่อ-สกุลนักเรียน</th>
+              <th className="px-4 py-2 text-left">ผู้ปกครอง</th>
+              <th className="px-4 py-2">ความสัมพันธ์</th>
             </tr>
           </thead>
           <tbody>
             {absentList.map(c => (
               <tr key={c.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="px-4 py-2 text-center text-gray-600">{c.studentNumber}</td>
+                <td className="px-4 py-2 text-center text-gray-500">{c.studentId}</td>
+                <td className="px-4 py-2 text-center text-gray-500">{c.studentNumber}</td>
                 <td className="px-4 py-2 text-gray-600">{c.classKey}</td>
                 <td className="px-4 py-2 text-gray-800">{c.firstName} {c.lastName}</td>
+                <td className="px-4 py-2 text-gray-700">{c.guardianFirstName} {c.guardianLastName}</td>
+                <td className="px-4 py-2 text-center text-gray-500">{c.relationship}</td>
               </tr>
             ))}
           </tbody>

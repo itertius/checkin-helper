@@ -1,16 +1,20 @@
 export function exportCSV(checkins, meetingTitle) {
-  const header = 'เลขที่,ชั้น,ห้อง,ชื่อ,นามสกุล,ผู้ปกครองมา\n'
+  const header = 'เลขประจำตัว,เลขที่,ชั้น,ห้อง,ชื่อนักเรียน,นามสกุลนักเรียน,ชื่อผู้ปกครอง,นามสกุลผู้ปกครอง,ความสัมพันธ์,ผู้ปกครองมา\n'
   const rows = checkins
     .map(c =>
       [
+        c.studentId,
         c.studentNumber,
         c.classNumber,
         c.classSection,
         c.firstName,
         c.lastName,
+        c.guardianFirstName,
+        c.guardianLastName,
+        c.relationship,
         c.guardianAttended ? 'มา' : 'ไม่มา',
       ]
-        .map(v => `"${String(v).replace(/"/g, '""')}"`)
+        .map(v => `"${String(v ?? '').replace(/"/g, '""')}"`)
         .join(',')
     )
     .join('\n')
