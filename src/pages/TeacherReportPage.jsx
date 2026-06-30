@@ -8,6 +8,7 @@ import { useClassReports } from '../hooks/useClassReports.js'
 import { useMeetings } from '../hooks/useMeetings.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { buildClassKey } from '../utils/classUtils.js'
+import { getStudentsBySection } from '../utils/roster.js'
 
 const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
 
@@ -23,6 +24,7 @@ export default function TeacherReportPage() {
   const [session, setSession] = useState('ไม่มีตอน')
   const [selected, setSelected] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [loadingRoster, setLoadingRoster] = useState(false)
 
   // Non-admin teachers: auto-fill and auto-select from profile
   useEffect(() => {
@@ -69,6 +71,38 @@ export default function TeacherReportPage() {
       relationship: '',
       studentId: '',
     })
+  }
+
+  async function handleLoadRoster() {
+    const roster = getStudentsBySection(classSection)
+    if (roster.length === 0) {
+      alert(`ไม่พบรายชื่อนักเรียนสำหรับห้อง ${classSection}`)
+      return
+    }
+    const existingIds = new Set(students.map(s => s.studentId))
+    const toAdd = roster.filter(s => !existingIds.has(s.studentId))
+    if (toAdd.length === 0) {
+      alert('โหลดรายชื่อแล้ว ไม่มีนักเรียนใหม่เพิ่ม')
+      return
+    }
+    if (!confirm(`โหลด ${toAdd.length} คน เข้าห้อง ${classKey}?`)) return
+    setLoadingRoster(true)
+    for (const s of toAdd) {
+      await addCheckin({
+        studentNumber: String(s.studentNumber),
+        studentId: s.studentId,
+        firstName: s.firstName,
+        lastName: s.lastName,
+        classNumber,
+        classSection,
+        session,
+        guardianFirstName: '',
+        guardianLastName: '',
+        relationship: '',
+        guardianAttended: false,
+      })
+    }
+    setLoadingRoster(false)
   }
 
   async function handleRemove(checkinId) {
@@ -191,9 +225,23 @@ export default function TeacherReportPage() {
               )}
             </div>
 
+            {/* Load roster */}
+            <div className="px-5 py-3 border-b border-gray-100 bg-amber-50 flex items-center justify-between">
+              <p className="text-xs text-amber-700 font-medium">
+                โหลดรายชื่อนักเรียนจากทะเบียน ({getStudentsBySection(classSection).length} คน)
+              </p>
+              <button
+                onClick={handleLoadRoster}
+                disabled={loadingRoster}
+                className="text-xs bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 disabled:opacity-50 transition-colors font-medium"
+              >
+                {loadingRoster ? 'กำลังโหลด...' : '📥 โหลดรายชื่อ'}
+              </button>
+            </div>
+
             {/* Quick add */}
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-              <p className="text-xs font-medium text-gray-500 mb-2">เพิ่มนักเรียน</p>
+              <p className="text-xs font-medium text-gray-500 mb-2">เพิ่มนักเรียนเดี่ยว</p>
               <QuickAddStudent onAdd={handleAddStudent} />
             </div>
 

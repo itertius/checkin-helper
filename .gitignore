@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Student/teacher roster files (sensitive school data)
+*.xlsx
+*.xls
+*.csv

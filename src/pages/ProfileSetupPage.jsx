@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { findTeacherByName } from '../utils/roster.js'
 
 const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
 
@@ -14,6 +15,26 @@ export default function ProfileSetupPage() {
     session: profile?.session || 'ไม่มีตอน',
   })
   const [saving, setSaving] = useState(false)
+  const [suggestion, setSuggestion] = useState(null)
+
+  // Auto-suggest class from teacher name in roster
+  useEffect(() => {
+    const name = form.displayName.trim()
+    if (name.length < 4) { setSuggestion(null); return }
+    const found = findTeacherByName(name)
+    setSuggestion(found || null)
+  }, [form.displayName])
+
+  function applySuggestion() {
+    if (!suggestion) return
+    setForm(p => ({
+      ...p,
+      classNumber: suggestion.classNumber,
+      classSection: suggestion.classSection,
+      session: suggestion.session,
+    }))
+    setSuggestion(null)
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -39,7 +60,22 @@ export default function ProfileSetupPage() {
               placeholder="ชื่อ-นามสกุล"
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {suggestion && (
+              <div className="mt-1.5 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                <p className="text-xs text-blue-700 flex-1">
+                  พบในทะเบียน: <strong>ม.3/{suggestion.classSection} {suggestion.session !== 'ไม่มีตอน' ? suggestion.session : ''}</strong>
+                </p>
+                <button
+                  type="button"
+                  onClick={applySuggestion}
+                  className="text-xs bg-blue-600 text-white px-2 py-1 rounded font-medium hover:bg-blue-700"
+                >
+                  ใช้
+                </button>
+              </div>
+            )}
           </div>
+
           <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">ชั้น</label>

@@ -1,0 +1,240 @@
+[
+  {
+    "firstName": "นางสุนันทา",
+    "lastName": "ยมหล้า",
+    "classNumber": "ม.3",
+    "classSection": "1",
+    "session": "ไม่มีตอน"
+  },
+  {
+    "firstName": "นางสาวอัญชนา",
+    "lastName": "พิมพ์ปรุ",
+    "classNumber": "ม.3",
+    "classSection": "2",
+    "session": "ไม่มีตอน"
+  },
+  {
+    "firstName": "นางสาวศศิธร",
+    "lastName": "มูลชาติ",
+    "classNumber": "ม.3",
+    "classSection": "3",
+    "session": "ไม่มีตอน"
+  },
+  {
+    "firstName": "นายสมเกียรติ",
+    "lastName": "นงนุช",
+    "classNumber": "ม.3",
+    "classSection": "4",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางบุญพิชชา",
+    "lastName": "พลับนิล",
+    "classNumber": "ม.3",
+    "classSection": "4",
+    "session": "ข"
+  },
+  {
+    "firstName": "ว่าที่ ร.ต.พลากร",
+    "lastName": "ทิพย์มาลา",
+    "classNumber": "ม.3",
+    "classSection": "5",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวประดับรัตน์",
+    "lastName": "พิมพ์ใส",
+    "classNumber": "ม.3",
+    "classSection": "5",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางกานดา",
+    "lastName": "พูลสวัสดิ์",
+    "classNumber": "ม.3",
+    "classSection": "6",
+    "session": "ก"
+  },
+  {
+    "firstName": "",
+    "lastName": "",
+    "classNumber": "ม.3",
+    "classSection": "6",
+    "session": "ข"
+  },
+  {
+    "firstName": "นายทรงยศ",
+    "lastName": "จันครา",
+    "classNumber": "ม.3",
+    "classSection": "7",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาววัชรากร",
+    "lastName": "มีแวว",
+    "classNumber": "ม.3",
+    "classSection": "7",
+    "session": "ข"
+  },
+  {
+    "firstName": "นายละออง",
+    "lastName": "นิลทสุข",
+    "classNumber": "ม.3",
+    "classSection": "8",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวอัญชลี",
+    "lastName": "อุปกรณ์",
+    "classNumber": "ม.3",
+    "classSection": "8",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสาวณัฏฐวี",
+    "lastName": "สุนา",
+    "classNumber": "ม.3",
+    "classSection": "9",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวอุษา",
+    "lastName": "สุวรรณโชติ",
+    "classNumber": "ม.3",
+    "classSection": "9",
+    "session": "ข"
+  },
+  {
+    "firstName": "นายณัฐพงศ์",
+    "lastName": "เชิดชู",
+    "classNumber": "ม.3",
+    "classSection": "10",
+    "session": "ก"
+  },
+  {
+    "firstName": "นายศุภณัฐ",
+    "lastName": "เที่ยงเจริญ",
+    "classNumber": "ม.3",
+    "classSection": "10",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสุนีย์",
+    "lastName": "ไชยเทพ",
+    "classNumber": "ม.3",
+    "classSection": "11",
+    "session": "ก"
+  },
+  {
+    "firstName": "นายประทีป",
+    "lastName": "บุบผา",
+    "classNumber": "ม.3",
+    "classSection": "11",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสาวพลอยปภัส",
+    "lastName": "จิรกุลเรืองนนท์",
+    "classNumber": "ม.3",
+    "classSection": "12",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาววาสนา",
+    "lastName": "แซ่เซี๊ยะ",
+    "classNumber": "ม.3",
+    "classSection": "12",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสาวอรธีรา",
+    "lastName": "สุกรีขันธ์",
+    "classNumber": "ม.3",
+    "classSection": "13",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวอรทัย",
+    "lastName": "เอื้อเฟื้อ",
+    "classNumber": "ม.3",
+    "classSection": "13",
+    "session": "ข"
+  },
+  {
+    "firstName": "นายเกษม",
+    "lastName": "พิมพ์เงิน",
+    "classNumber": "ม.3",
+    "classSection": "14",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวกีรติกานต์",
+    "lastName": "แก้วคง",
+    "classNumber": "ม.3",
+    "classSection": "14",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางภัททิรา",
+    "lastName": "ยุรยาตร์",
+    "classNumber": "ม.3",
+    "classSection": "15",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาววีรพิชชา",
+    "lastName": "รอดเอียด",
+    "classNumber": "ม.3",
+    "classSection": "15",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสาวพนิตนาถ",
+    "lastName": "ฟุ้งเฟื่อง",
+    "classNumber": "ม.3",
+    "classSection": "16",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางขจี",
+    "lastName": "เปรมปรี",
+    "classNumber": "ม.3",
+    "classSection": "16",
+    "session": "ข"
+  },
+  {
+    "firstName": "นายอมร",
+    "lastName": "ลุนจุนละ",
+    "classNumber": "ม.3",
+    "classSection": "17",
+    "session": "ก"
+  },
+  {
+    "firstName": "นางสาวชนม์นิภา",
+    "lastName": "ผิวจันทร์",
+    "classNumber": "ม.3",
+    "classSection": "17",
+    "session": "ข"
+  },
+  {
+    "firstName": "นางสาวพิมพ์พิชนา",
+    "lastName": "ริ้มประพันณี",
+    "classNumber": "ม.3",
+    "classSection": "18",
+    "session": "ไม่มีตอน"
+  },
+  {
+    "firstName": "นางสาวฌัชชา",
+    "lastName": "เหล่าหล้า",
+    "classNumber": "ม.3",
+    "classSection": "19",
+    "session": "ไม่มีตอน"
+  },
+  {
+    "firstName": "นางนงเยาว์",
+    "lastName": "นวเจริญพงศ์",
+    "classNumber": "ม.3",
+    "classSection": "20",
+    "session": "ไม่มีตอน"
+  }
+]
