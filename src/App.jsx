@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage.jsx'
 import TeacherReportPage from './pages/TeacherReportPage.jsx'
 import ProfileSetupPage from './pages/ProfileSetupPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
+import PublicCheckinPage from './pages/PublicCheckinPage.jsx'
 import ProtectedRoute from './components/layout/ProtectedRoute.jsx'
 import AdminRoute from './components/layout/AdminRoute.jsx'
 
@@ -14,6 +15,7 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/public/:id" element={<PublicCheckinPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile-setup" element={<ProfileSetupPage />} />
           <Route path="/meetings" element={<MeetingsPage />} />
