@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext.jsx'
 
 export default function MeetingCard({ meeting, onDelete }) {
+  const { isAdmin } = useAuth()
+
   const date = meeting.createdAt?.toDate?.()?.toLocaleDateString('th-TH', {
     year: 'numeric',
     month: 'long',
@@ -15,13 +18,15 @@ export default function MeetingCard({ meeting, onDelete }) {
           <p className="text-sm text-gray-500 mt-1">{date}</p>
           <p className="text-xs text-gray-400 mt-0.5">สร้างโดย: {meeting.createdByEmail}</p>
         </div>
-        <button
-          onClick={() => onDelete(meeting.id)}
-          className="text-gray-400 hover:text-red-500 transition-colors p-1 shrink-0"
-          title="ลบประชุม"
-        >
-          ✕
-        </button>
+        {onDelete && (
+          <button
+            onClick={() => onDelete(meeting.id)}
+            className="text-gray-400 hover:text-red-500 transition-colors p-1 shrink-0"
+            title="ลบประชุม"
+          >
+            ✕
+          </button>
+        )}
       </div>
       <div className="flex gap-2 mt-4">
         <Link
@@ -30,12 +35,14 @@ export default function MeetingCard({ meeting, onDelete }) {
         >
           📝 รายงานครู
         </Link>
-        <Link
-          to={`/meetings/${meeting.id}`}
-          className="flex-1 text-center bg-gray-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
-        >
-          เช็คชื่อ
-        </Link>
+        {isAdmin && (
+          <Link
+            to={`/meetings/${meeting.id}`}
+            className="flex-1 text-center bg-gray-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+          >
+            เช็คชื่อ
+          </Link>
+        )}
         <Link
           to={`/meetings/${meeting.id}/dashboard`}
           className="flex-1 text-center bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"

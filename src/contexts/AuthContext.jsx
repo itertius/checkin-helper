@@ -8,6 +8,8 @@ import {
   GoogleAuthProvider,
 } from 'firebase/auth'
 import { auth } from '../firebase.js'
+import { useRole } from '../hooks/useRole.js'
+import { useUserProfile } from '../hooks/useUserProfile.js'
 
 const AuthContext = createContext(null)
 
@@ -16,12 +18,33 @@ function isWebView() {
   return /FBAN|FBAV|Instagram|Line|Twitter|MicroMessenger|WebView|wv/.test(ua)
 }
 
+function RoleWrapper({ user, children }) {
+  const { isAdmin, loading: roleLoading } = useRole(user?.uid)
+  const { profile, loading: profileLoading, saveProfile } = useUserProfile(user?.uid)
+
+  return (
+    <AuthContext.Provider value={{
+      user,
+      isAdmin,
+      profile,
+      saveProfile,
+      loading: roleLoading || profileLoading,
+    }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined)
+  const [authLoading, setAuthLoading] = useState(true)
 
   useEffect(() => {
     getRedirectResult(auth).catch(() => {})
-    return onAuthStateChanged(auth, setUser)
+    return onAuthStateChanged(auth, u => {
+      setUser(u)
+      setAuthLoading(false)
+    })
   }, [])
 
   async function loginWithGoogle() {
@@ -43,8 +66,35 @@ export function AuthProvider({ children }) {
 
   const logout = () => signOut(auth)
 
+  if (authLoading) {
+    return (
+      <AuthContext.Provider value={{ user: undefined, isAdmin: false, profile: undefined, loading: true, loginWithGoogle, logout }}>
+        {children}
+      </AuthContext.Provider>
+    )
+  }
+
+  if (!user) {
+    return (
+      <AuthContext.Provider value={{ user: null, isAdmin: false, profile: null, loading: false, loginWithGoogle, logout }}>
+        {children}
+      </AuthContext.Provider>
+    )
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loginWithGoogle, logout }}>
+    <RoleWrapper user={user}>
+      <LogoutInjector logout={logout} loginWithGoogle={loginWithGoogle}>
+        {children}
+      </LogoutInjector>
+    </RoleWrapper>
+  )
+}
+
+function LogoutInjector({ logout, loginWithGoogle, children }) {
+  const ctx = useContext(AuthContext)
+  return (
+    <AuthContext.Provider value={{ ...ctx, logout, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar.jsx'
 import ClassSummaryTable from '../components/dashboard/ClassSummaryTable.jsx'
@@ -9,13 +10,30 @@ import { useCheckins } from '../hooks/useCheckins.js'
 import { useMeetings } from '../hooks/useMeetings.js'
 import { useDashboard } from '../hooks/useDashboard.js'
 import { useClassReports } from '../hooks/useClassReports.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { buildClassKey } from '../utils/classUtils.js'
 
 export default function DashboardPage() {
   const { id } = useParams()
   const { meetings } = useMeetings()
   const { checkins, loading } = useCheckins(id)
-  const { classSummary, absentList, totalStudents, totalAttended } = useDashboard(checkins)
   const { classReports } = useClassReports(id)
+  const { isAdmin, profile } = useAuth()
+
+  // Teachers only see their own class
+  const visibleCheckins = useMemo(() => {
+    if (isAdmin || !profile) return checkins
+    const myKey = buildClassKey(profile.classNumber, profile.classSection, profile.session)
+    return checkins.filter(c => c.classKey === myKey)
+  }, [checkins, isAdmin, profile])
+
+  const visibleReports = useMemo(() => {
+    if (isAdmin || !profile) return classReports
+    const myKey = buildClassKey(profile.classNumber, profile.classSection, profile.session)
+    return classReports.filter(r => r.classKey === myKey)
+  }, [classReports, isAdmin, profile])
+
+  const { classSummary, absentList, totalStudents, totalAttended } = useDashboard(visibleCheckins)
 
   const meeting = meetings.find(m => m.id === id)
 
@@ -33,11 +51,25 @@ export default function DashboardPage() {
       <Navbar title={meeting?.title} />
       <main className="max-w-4xl mx-auto p-4 space-y-4">
         <div className="flex items-center gap-2 mt-2">
-          <Link to={`/meetings/${id}`} className="text-blue-600 hover:underline text-sm">← เช็คชื่อ</Link>
-          <span className="text-gray-400 text-sm">/</span>
+          {isAdmin ? (
+            <>
+              <Link to={`/meetings/${id}`} className="text-blue-600 hover:underline text-sm">← เช็คชื่อ</Link>
+              <span className="text-gray-400 text-sm">/</span>
+            </>
+          ) : (
+            <>
+              <Link to="/meetings" className="text-blue-600 hover:underline text-sm">← ประชุมทั้งหมด</Link>
+              <span className="text-gray-400 text-sm">/</span>
+            </>
+          )}
           <span className="text-sm text-gray-700 font-medium">แดชบอร์ด</span>
+          {!isAdmin && profile && (
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full ml-1">
+              {buildClassKey(profile.classNumber, profile.classSection, profile.session)}
+            </span>
+          )}
           <div className="ml-auto">
-            <ExportCSVButton checkins={checkins} meetingTitle={meeting?.title} />
+            <ExportCSVButton checkins={visibleCheckins} meetingTitle={meeting?.title} />
           </div>
         </div>
 
@@ -57,8 +89,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* สถานะการรายงานครู */}
-        <ClassReportStatus classReports={classReports} classSummary={classSummary} />
+        {/* สถานะการรายงานครู — admin sees all, teacher sees own */}
+        <ClassReportStatus classReports={visibleReports} classSummary={classSummary} />
 
         {classSummary.length > 0 && (
           <>

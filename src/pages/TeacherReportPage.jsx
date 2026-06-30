@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar.jsx'
 import QuickAddStudent from '../components/report/QuickAddStudent.jsx'
@@ -6,6 +6,7 @@ import ReportStudentList from '../components/report/ReportStudentList.jsx'
 import { useCheckins } from '../hooks/useCheckins.js'
 import { useClassReports } from '../hooks/useClassReports.js'
 import { useMeetings } from '../hooks/useMeetings.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import { buildClassKey } from '../utils/classUtils.js'
 
 const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
@@ -15,12 +16,23 @@ export default function TeacherReportPage() {
   const { meetings } = useMeetings()
   const { checkins, addCheckin, toggleAttended, removeCheckin } = useCheckins(id)
   const { submitReport, isSubmitted } = useClassReports(id)
+  const { isAdmin, profile } = useAuth()
 
   const [classNumber, setClassNumber] = useState('ม.3')
   const [classSection, setClassSection] = useState('')
   const [session, setSession] = useState('ไม่มีตอน')
   const [selected, setSelected] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  // Non-admin teachers: auto-fill and auto-select from profile
+  useEffect(() => {
+    if (!isAdmin && profile) {
+      setClassNumber(profile.classNumber || 'ม.3')
+      setClassSection(profile.classSection || '')
+      setSession(profile.session || 'ไม่มีตอน')
+      if (profile.classSection) setSelected(true)
+    }
+  }, [isAdmin, profile])
 
   const meeting = meetings.find(m => m.id === id)
   const classKey = buildClassKey(classNumber, classSection, session)
@@ -41,6 +53,7 @@ export default function TeacherReportPage() {
   }
 
   function handleReset() {
+    if (!isAdmin) return
     setSelected(false)
     setClassSection('')
   }
@@ -78,60 +91,80 @@ export default function TeacherReportPage() {
     setSaving(false)
   }
 
+  const locked = !isAdmin
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar title={meeting?.title} />
       <main className="max-w-2xl mx-auto p-4 space-y-4">
         <div className="flex items-center gap-2 mt-2">
-          <Link to={`/meetings/${id}`} className="text-blue-600 hover:underline text-sm">← เช็คชื่อ</Link>
-          <span className="text-gray-400 text-sm">/</span>
+          {isAdmin ? (
+            <>
+              <Link to={`/meetings/${id}`} className="text-blue-600 hover:underline text-sm">← เช็คชื่อ</Link>
+              <span className="text-gray-400 text-sm">/</span>
+            </>
+          ) : (
+            <>
+              <Link to="/meetings" className="text-blue-600 hover:underline text-sm">← ประชุมทั้งหมด</Link>
+              <span className="text-gray-400 text-sm">/</span>
+            </>
+          )}
           <span className="text-sm text-gray-700 font-medium">รายงานครูที่ปรึกษา</span>
         </div>
 
-        {/* Step 1: เลือกห้อง/ตอน */}
+        {/* Step 1: เลือกห้อง/ตอน — locked for teachers */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="bg-blue-50 border-b border-blue-100 px-5 py-3">
-            <p className="text-sm font-semibold text-blue-800">เลือกห้อง / ตอน ของท่าน</p>
+          <div className={`border-b px-5 py-3 ${locked ? 'bg-gray-50 border-gray-100' : 'bg-blue-50 border-blue-100'}`}>
+            <p className={`text-sm font-semibold ${locked ? 'text-gray-600' : 'text-blue-800'}`}>
+              {locked ? `ห้องของท่าน: ${classKey}` : 'เลือกห้อง / ตอน ของท่าน'}
+            </p>
           </div>
-          <form onSubmit={handleSelect} className="p-5">
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">ชั้น</label>
-                <input
-                  value={classNumber}
-                  onChange={e => { setClassNumber(e.target.value); setSelected(false) }}
-                  placeholder="เช่น ม.3"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">ห้อง</label>
-                <input
-                  value={classSection}
-                  onChange={e => { setClassSection(e.target.value); setSelected(false) }}
-                  placeholder="เช่น 1"
-                  required
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">ตอน</label>
-                <select
-                  value={session}
-                  onChange={e => { setSession(e.target.value); setSelected(false) }}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {SESSIONS.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
+          {locked ? (
+            <div className="px-5 py-3">
+              <p className="text-xs text-gray-400">ห้องกำหนดจากโปรไฟล์ครู — หากต้องการเปลี่ยน ไปที่การตั้งค่าโปรไฟล์</p>
+              <Link to="/profile-setup" className="text-xs text-blue-500 hover:underline">แก้ไขโปรไฟล์</Link>
             </div>
-            <button
-              type="submit"
-              className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              เลือกห้อง {classNumber}/{classSection}{session !== 'ไม่มีตอน' ? ` ตอน${session}` : ''}
-            </button>
-          </form>
+          ) : (
+            <form onSubmit={handleSelect} className="p-5">
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">ชั้น</label>
+                  <input
+                    value={classNumber}
+                    onChange={e => { setClassNumber(e.target.value); setSelected(false) }}
+                    placeholder="เช่น ม.3"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">ห้อง</label>
+                  <input
+                    value={classSection}
+                    onChange={e => { setClassSection(e.target.value); setSelected(false) }}
+                    placeholder="เช่น 1"
+                    required
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">ตอน</label>
+                  <select
+                    value={session}
+                    onChange={e => { setSession(e.target.value); setSelected(false) }}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {SESSIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                เลือกห้อง {classNumber}/{classSection}{session !== 'ไม่มีตอน' ? ` ตอน${session}` : ''}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Step 2: รายชื่อนักเรียน */}
@@ -151,9 +184,11 @@ export default function TeacherReportPage() {
                   ทั้งหมด {students.length} คน · มา {attended} · ไม่มา {absent}
                 </p>
               </div>
-              <button onClick={handleReset} className="text-xs text-gray-400 hover:text-gray-600">
-                เปลี่ยนห้อง
-              </button>
+              {!locked && (
+                <button onClick={handleReset} className="text-xs text-gray-400 hover:text-gray-600">
+                  เปลี่ยนห้อง
+                </button>
+              )}
             </div>
 
             {/* Quick add */}
