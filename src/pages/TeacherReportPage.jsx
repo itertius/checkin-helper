@@ -15,7 +15,7 @@ const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
 export default function TeacherReportPage() {
   const { id } = useParams()
   const { meetings } = useMeetings()
-  const { checkins, addCheckin, toggleAttended, removeCheckin } = useCheckins(id)
+  const { checkins, loading: checkinsLoading, addCheckin, toggleAttended, removeCheckin } = useCheckins(id)
   const { submitReport, isSubmitted } = useClassReports(id)
   const { isAdmin, profile } = useAuth()
 
@@ -24,7 +24,7 @@ export default function TeacherReportPage() {
   const [session, setSession] = useState('ไม่มีตอน')
   const [selected, setSelected] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [loadingRoster, setLoadingRoster] = useState(false)
+  const [rosterLoaded, setRosterLoaded] = useState(false)
 
   // Non-admin teachers: auto-fill and auto-select from profile
   useEffect(() => {
@@ -48,15 +48,43 @@ export default function TeacherReportPage() {
   const absent = students.length - attended
   const alreadySubmitted = selected && isSubmitted(classKey)
 
+  // Auto-load roster when class is selected and Firestore confirms no students yet
+  useEffect(() => {
+    if (!selected || checkinsLoading || rosterLoaded) return
+    if (students.length > 0) { setRosterLoaded(true); return }
+    const roster = getStudentsBySection(classSection)
+    if (roster.length === 0) { setRosterLoaded(true); return }
+    setRosterLoaded(true)
+    ;(async () => {
+      for (const s of roster) {
+        await addCheckin({
+          studentNumber: String(s.studentNumber),
+          studentId: s.studentId,
+          firstName: s.firstName,
+          lastName: s.lastName,
+          classNumber,
+          classSection,
+          session,
+          guardianFirstName: '',
+          guardianLastName: '',
+          relationship: '',
+          guardianAttended: false,
+        })
+      }
+    })()
+  }, [selected, checkinsLoading, rosterLoaded, students.length, classSection])
+
   function handleSelect(e) {
     e.preventDefault()
     if (!classSection.trim()) return
+    setRosterLoaded(false)
     setSelected(true)
   }
 
   function handleReset() {
     if (!isAdmin) return
     setSelected(false)
+    setRosterLoaded(false)
     setClassSection('')
   }
 
@@ -71,38 +99,6 @@ export default function TeacherReportPage() {
       relationship: '',
       studentId: '',
     })
-  }
-
-  async function handleLoadRoster() {
-    const roster = getStudentsBySection(classSection)
-    if (roster.length === 0) {
-      alert(`ไม่พบรายชื่อนักเรียนสำหรับห้อง ${classSection}`)
-      return
-    }
-    const existingIds = new Set(students.map(s => s.studentId))
-    const toAdd = roster.filter(s => !existingIds.has(s.studentId))
-    if (toAdd.length === 0) {
-      alert('โหลดรายชื่อแล้ว ไม่มีนักเรียนใหม่เพิ่ม')
-      return
-    }
-    if (!confirm(`โหลด ${toAdd.length} คน เข้าห้อง ${classKey}?`)) return
-    setLoadingRoster(true)
-    for (const s of toAdd) {
-      await addCheckin({
-        studentNumber: String(s.studentNumber),
-        studentId: s.studentId,
-        firstName: s.firstName,
-        lastName: s.lastName,
-        classNumber,
-        classSection,
-        session,
-        guardianFirstName: '',
-        guardianLastName: '',
-        relationship: '',
-        guardianAttended: false,
-      })
-    }
-    setLoadingRoster(false)
   }
 
   async function handleRemove(checkinId) {
@@ -225,23 +221,9 @@ export default function TeacherReportPage() {
               )}
             </div>
 
-            {/* Load roster */}
-            <div className="px-5 py-3 border-b border-gray-100 bg-amber-50 flex items-center justify-between">
-              <p className="text-xs text-amber-700 font-medium">
-                โหลดรายชื่อนักเรียนจากทะเบียน ({getStudentsBySection(classSection).length} คน)
-              </p>
-              <button
-                onClick={handleLoadRoster}
-                disabled={loadingRoster}
-                className="text-xs bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 disabled:opacity-50 transition-colors font-medium"
-              >
-                {loadingRoster ? 'กำลังโหลด...' : '📥 โหลดรายชื่อ'}
-              </button>
-            </div>
-
             {/* Quick add */}
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-              <p className="text-xs font-medium text-gray-500 mb-2">เพิ่มนักเรียนเดี่ยว</p>
+              <p className="text-xs font-medium text-gray-500 mb-2">เพิ่มนักเรียน</p>
               <QuickAddStudent onAdd={handleAddStudent} />
             </div>
 
