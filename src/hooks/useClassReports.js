@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { encodeClassKey } from '../utils/classUtils.js'
 
 export function useClassReports(meetingId) {
   const { user } = useAuth()
@@ -26,7 +27,7 @@ export function useClassReports(meetingId) {
   }, [meetingId])
 
   async function submitReport({ classKey, classNumber, classSection, session, totalStudents, attendedCount }) {
-    await setDoc(doc(db, 'meetings', meetingId, 'classReports', classKey), {
+    await setDoc(doc(db, 'meetings', meetingId, 'classReports', encodeClassKey(classKey)), {
       classKey,
       classNumber,
       classSection,
