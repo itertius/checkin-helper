@@ -4,15 +4,18 @@ import ClassSummaryTable from '../components/dashboard/ClassSummaryTable.jsx'
 import AbsentList from '../components/dashboard/AbsentList.jsx'
 import AttendanceBarChart from '../components/dashboard/AttendanceBarChart.jsx'
 import ExportCSVButton from '../components/dashboard/ExportCSVButton.jsx'
+import ClassReportStatus from '../components/dashboard/ClassReportStatus.jsx'
 import { useCheckins } from '../hooks/useCheckins.js'
 import { useMeetings } from '../hooks/useMeetings.js'
 import { useDashboard } from '../hooks/useDashboard.js'
+import { useClassReports } from '../hooks/useClassReports.js'
 
 export default function DashboardPage() {
   const { id } = useParams()
   const { meetings } = useMeetings()
   const { checkins, loading } = useCheckins(id)
   const { classSummary, absentList, totalStudents, totalAttended } = useDashboard(checkins)
+  const { classReports } = useClassReports(id)
 
   const meeting = meetings.find(m => m.id === id)
 
@@ -54,17 +57,15 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {classSummary.length > 0 ? (
+        {/* สถานะการรายงานครู */}
+        <ClassReportStatus classReports={classReports} classSummary={classSummary} />
+
+        {classSummary.length > 0 && (
           <>
             <AttendanceBarChart classSummary={classSummary} />
             <ClassSummaryTable classSummary={classSummary} />
             <AbsentList absentList={absentList} />
           </>
-        ) : (
-          <div className="text-center py-16 text-gray-400">
-            <div className="text-5xl mb-3">📊</div>
-            <p>ยังไม่มีข้อมูล — กลับไปเช็คชื่อก่อน</p>
-          </div>
         )}
       </main>
     </div>

@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import MeetingsPage from './pages/MeetingsPage.jsx'
 import MeetingDetailPage from './pages/MeetingDetailPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
+import TeacherReportPage from './pages/TeacherReportPage.jsx'
 import ProtectedRoute from './components/layout/ProtectedRoute.jsx'
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/meetings" element={<MeetingsPage />} />
           <Route path="/meetings/:id" element={<MeetingDetailPage />} />
           <Route path="/meetings/:id/dashboard" element={<DashboardPage />} />
+          <Route path="/meetings/:id/report" element={<TeacherReportPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -25,8 +25,14 @@ export default function MeetingCard({ meeting, onDelete }) {
       </div>
       <div className="flex gap-2 mt-4">
         <Link
-          to={`/meetings/${meeting.id}`}
+          to={`/meetings/${meeting.id}/report`}
           className="flex-1 text-center bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+          📝 รายงานครู
+        </Link>
+        <Link
+          to={`/meetings/${meeting.id}`}
+          className="flex-1 text-center bg-gray-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
         >
           เช็คชื่อ
         </Link>
