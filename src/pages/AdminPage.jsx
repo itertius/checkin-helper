@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   collection, collectionGroup, onSnapshot,
-  setDoc, deleteDoc, doc, query, where, getDocs, serverTimestamp,
+  setDoc, deleteDoc, doc, query, where, getDocs, serverTimestamp, updateDoc,
 } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -68,6 +68,11 @@ export default function AdminPage() {
   async function handleRemove(targetUid) {
     if (targetUid === user.uid && !confirm('ลบตัวเองออกจาก admin?')) return
     await deleteDoc(doc(db, 'admins', targetUid))
+  }
+
+  async function handleDeleteTeacher(targetUid, displayName) {
+    if (!confirm(`ลบครู "${displayName || targetUid}" ออกจากระบบ?\nครูจะต้อง setup โปรไฟล์ใหม่เมื่อ login ครั้งถัดไป`)) return
+    await deleteDoc(doc(db, 'userProfiles', targetUid))
   }
 
   return (
@@ -142,6 +147,13 @@ export default function AdminPage() {
                             {reports > 0 ? `ส่งรายงาน ${reports} ครั้ง` : 'ยังไม่ส่งรายงาน'}
                           </p>
                         </div>
+                        <button
+                          onClick={() => handleDeleteTeacher(t.uid, t.displayName)}
+                          className="text-gray-300 hover:text-red-500 text-sm transition-colors shrink-0 ml-1"
+                          title="ลบครูออกจากระบบ"
+                        >
+                          ✕
+                        </button>
                       </div>
                     )
                   })}
