@@ -8,7 +8,7 @@ import { useClassReports } from '../hooks/useClassReports.js'
 import { useMeetings } from '../hooks/useMeetings.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { buildClassKey } from '../utils/classUtils.js'
-import { getStudentsBySection } from '../utils/roster.js'
+import { getStudents } from '../utils/roster.js'
 
 const SESSIONS = ['ไม่มีตอน', 'ก', 'ข']
 
@@ -52,7 +52,7 @@ export default function TeacherReportPage() {
   useEffect(() => {
     if (!selected || checkinsLoading || rosterLoaded) return
     if (students.length > 0) { setRosterLoaded(true); return }
-    const roster = getStudentsBySection(classSection)
+    const roster = getStudents(classNumber, classSection, session)
     if (roster.length === 0) { setRosterLoaded(true); return }
     setRosterLoaded(true)
     ;(async () => {

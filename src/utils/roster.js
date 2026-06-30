@@ -1,8 +1,10 @@
 import studentsData from '../data/students.json'
 import teachersData from '../data/teachers.json'
+import { buildClassKey } from './classUtils.js'
 
-export function getStudentsBySection(classSection) {
-  return studentsData[String(classSection)] || []
+export function getStudents(classNumber, classSection, session) {
+  const key = buildClassKey(classNumber, classSection, session)
+  return studentsData[key] || []
 }
 
 export function findTeacher(classNumber, classSection, session) {

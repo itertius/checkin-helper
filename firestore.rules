@@ -20,7 +20,6 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
 
       match /checkins/{checkinId} {
-        // Allow public (unauthenticated) writes for guardian self-checkin via shared link
         allow read: if request.auth != null;
         allow create: if true;
         allow update, delete: if request.auth != null;
@@ -30,6 +29,11 @@ service cloud.firestore {
         allow read: if request.auth != null;
         allow write: if request.auth != null;
       }
+    }
+
+    // Allow collectionGroup query on classReports for admin dashboard
+    match /{path=**}/classReports/{classKey} {
+      allow read: if request.auth != null;
     }
   }
 }
