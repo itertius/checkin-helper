@@ -40,7 +40,10 @@ export default function TeacherReportPage() {
   const classKey = buildClassKey(classNumber, classSection, session)
 
   const students = useMemo(
-    () => selected ? checkins.filter(c => c.classKey === classKey) : [],
+    () => selected
+      ? [...checkins.filter(c => c.classKey === classKey)]
+          .sort((a, b) => (parseInt(a.studentNumber) || 0) - (parseInt(b.studentNumber) || 0))
+      : [],
     [checkins, classKey, selected]
   )
 
