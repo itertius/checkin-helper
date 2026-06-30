@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar.jsx'
 import QuickAddStudent from '../components/report/QuickAddStudent.jsx'
@@ -24,7 +24,7 @@ export default function TeacherReportPage() {
   const [session, setSession] = useState('ไม่มีตอน')
   const [selected, setSelected] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [rosterLoaded, setRosterLoaded] = useState(false)
+  const loadedForRef = useRef(null) // tracks classKey that roster was loaded for
 
   // Non-admin teachers: auto-fill and auto-select from profile
   useEffect(() => {
@@ -51,13 +51,14 @@ export default function TeacherReportPage() {
   const absent = students.length - attended
   const alreadySubmitted = selected && isSubmitted(classKey)
 
-  // Auto-load roster when class is selected and Firestore confirms no students yet
+  // Auto-load roster once per classKey when Firestore confirms no students yet
   useEffect(() => {
-    if (!selected || checkinsLoading || rosterLoaded) return
-    if (students.length > 0) { setRosterLoaded(true); return }
+    if (!selected || checkinsLoading) return
+    if (loadedForRef.current === classKey) return  // already loaded for this class
+    if (students.length > 0) { loadedForRef.current = classKey; return }  // data exists
     const roster = getStudents(classNumber, classSection, session)
-    if (roster.length === 0) { setRosterLoaded(true); return }
-    setRosterLoaded(true)
+    if (roster.length === 0) { loadedForRef.current = classKey; return }
+    loadedForRef.current = classKey  // mark before async to prevent double-fire
     ;(async () => {
       for (const s of roster) {
         await addCheckin({
@@ -75,19 +76,17 @@ export default function TeacherReportPage() {
         })
       }
     })()
-  }, [selected, checkinsLoading, rosterLoaded, students.length, classSection])
+  }, [selected, checkinsLoading, classKey, students.length])
 
   function handleSelect(e) {
     e.preventDefault()
     if (!classSection.trim()) return
-    setRosterLoaded(false)
     setSelected(true)
   }
 
   function handleReset() {
     if (!isAdmin) return
     setSelected(false)
-    setRosterLoaded(false)
     setClassSection('')
   }
 
